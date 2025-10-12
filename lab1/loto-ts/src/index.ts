@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import "dotenv/config";
 import prisma from "./prisma.js";
+import { adminRouter } from "./routes/admin.js";
 
 const app = express();
 
@@ -15,11 +16,6 @@ app.get("/health", (_req, res) => {
     res.status(200).json({ ok: true, uptime: process.uptime() })
 });
 
-// Root
-app.get("/", (_req, res) => {
-    res.send("Hello World 👋");
-});
-
 // DB health check
 app.get("/db-health", async (_req, res) => {
     try {
@@ -30,6 +26,13 @@ app.get("/db-health", async (_req, res) => {
         res.status(500).json({ db: "ERROR" });
     }
 });
+
+// Root
+app.get("/", (_req, res) => {
+    res.send("Hello There! General Kenobi!");
+});
+
+app.use(adminRouter);
 
 // 404 Error handler
 app.use((_req, res) => {

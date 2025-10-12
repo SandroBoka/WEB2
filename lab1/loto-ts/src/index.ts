@@ -1,7 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import "dotenv/config";
-import { error } from "console";
+import prisma from "./prisma.js";
 
 const app = express();
 
@@ -20,9 +20,20 @@ app.get("/", (_req, res) => {
     res.send("Hello World 👋");
 });
 
+// DB health check
+app.get("/db-health", async (_req, res) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        res.json({ db: "OK" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ db: "ERROR" });
+    }
+});
+
 // 404 Error handler
 app.use((_req, res) => {
-    res.status(404).json({ error: "Not Found"});
+    res.status(404).json({ error: "Not Found" });
 });
 
 app.use(

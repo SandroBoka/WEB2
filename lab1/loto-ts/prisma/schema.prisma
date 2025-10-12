@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Round {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  isActive  Boolean  @default(true)
+  tickets   Ticket[]
+  draw      Draw?
+}
+
+model Ticket {
+  documentId  String
+  numbers     Int[]
+  code        String   @id
+  roundId     Int
+  round       Round    @relation(fields: [roundId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Draw {
+  id        Int      @id @default(autoincrement())
+  numbers   Int[]
+  roundId   Int      @unique
+  round     Round    @relation(fields: [roundId], references: [id])
+  createdAt DateTime @default(now())
+}

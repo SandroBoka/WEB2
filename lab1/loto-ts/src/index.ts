@@ -40,6 +40,15 @@ app.use((_req, res) => {
 });
 
 app.use(
+  (err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (err.name === "UnauthorizedError" || err.code === "invalid_token" || err.code === "invalid_request") {
+      return res.status(401).json({ error: "Unauthorized", detail: err.message });
+    }
+    return next(err);
+  }
+);
+
+app.use(
     (err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
         console.error(err);
         res.status(err.status || 500).json({ error: "Internal Server Error" });

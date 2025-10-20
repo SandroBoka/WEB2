@@ -1,8 +1,12 @@
 import { Router } from "express";
 import prisma from "../prisma.js";
 import drawScheme from "../validation.js";
+import { requireM2M, requireScope } from "../auth/m2m.js";
+import { env } from "../env.js";
 
 export const adminRouter = Router();
+
+adminRouter.use(requireM2M, requireScope(env.M2M_REQUIRED_SCOPE));
 
 /**
  * POST /new-round

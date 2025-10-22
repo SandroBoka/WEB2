@@ -3,11 +3,13 @@ import morgan from "morgan";
 import "dotenv/config";
 import prisma from "./prisma.js";
 import { adminRouter } from "./routes/admin.js";
-
+import { oidc } from "./auth/oidc.js";
+ 
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(oidc);
 app.use(morgan("dev"));
 
 // Routes
@@ -27,10 +29,20 @@ app.get("/db-health", async (_req, res) => {
     }
 });
 
-// Root
-app.get("/", (_req, res) => {
-    res.send("Hello There! General Kenobi!");
+app.get("/", (req, res) => {
+    if (req.oidc.isAuthenticated()) {
+        res.send(`
+            <h2>Hello, ${req.oidc.user?.name || req.oidc.user?.email}</h2>
+            <p><a href="/logout">Logout</p>
+            `);
+    } else {
+        res.send(`
+            <h3>Hello, login to continue.</h3>
+            <a href="/login">Login</a>
+            `);
+    }
 });
+
 
 app.use(adminRouter);
 

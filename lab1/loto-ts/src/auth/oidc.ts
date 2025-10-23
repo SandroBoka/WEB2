@@ -2,6 +2,7 @@ import { auth } from "express-openid-connect";
 
 export const oidc = auth({
     authRequired: false,
+    auth0Logout: true,
     idpLogout: true,
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     baseURL: process.env.AUTH0_BASE_URL,

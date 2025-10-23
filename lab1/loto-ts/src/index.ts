@@ -4,6 +4,7 @@ import "dotenv/config";
 import prisma from "./prisma.js";
 import { adminRouter } from "./routes/admin.js";
 import { oidc } from "./auth/oidc.js";
+import { userRouter } from "./routes/user.js";
  
 const app = express();
 
@@ -12,13 +13,10 @@ app.use(express.json());
 app.use(oidc);
 app.use(morgan("dev"));
 
-// Routes
-// Heatlh check
 app.get("/health", (_req, res) => {
     res.status(200).json({ ok: true, uptime: process.uptime() })
 });
 
-// DB health check
 app.get("/db-health", async (_req, res) => {
     try {
         await prisma.$queryRaw`SELECT 1`;
@@ -43,7 +41,7 @@ app.get("/", (req, res) => {
     }
 });
 
-
+app.use(userRouter);
 app.use(adminRouter);
 
 // 404 Error handler

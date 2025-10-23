@@ -25,7 +25,7 @@ model Round {
 model Ticket {
   documentId  String
   numbers     Int[]
-  code        String   @id
+  code        String   @id @default(uuid()) @db.Uuid
   roundId     Int
   round       Round    @relation(fields: [roundId], references: [id])
   createdAt   DateTime @default(now())

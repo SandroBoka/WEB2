@@ -19,4 +19,6 @@ export function requireLogin(req: any, res: any, next: any) {
     if (!req.oidc?.isAuthenticated()) {
         return res.status(401).send("Login needed.");
     }
+
+    return next();
 }

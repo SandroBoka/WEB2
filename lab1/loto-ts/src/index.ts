@@ -5,6 +5,11 @@ import prisma from "./prisma.js";
 import { adminRouter } from "./routes/admin.js";
 import { oidc } from "./auth/oidc.js";
 import { userRouter } from "./routes/user.js";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
  
 const app = express();
 
@@ -17,6 +22,13 @@ app.get("/health", (_req, res) => {
     res.status(200).json({ ok: true, uptime: process.uptime() })
 });
 
+app.get("/session", (req, res) => {
+    res.json({
+        isAuthenticated: req.oidc?.isAuthenticated?.() ?? false,
+        user: req.oidc?.user ?? null
+    })
+})
+
 app.get("/db-health", async (_req, res) => {
     try {
         await prisma.$queryRaw`SELECT 1`;
@@ -27,18 +39,26 @@ app.get("/db-health", async (_req, res) => {
     }
 });
 
-app.get("/", (req, res) => {
-    if (req.oidc.isAuthenticated()) {
-        res.send(`
-            <h2>Hello, ${req.oidc.user?.name || req.oidc.user?.email}</h2>
-            <p><a href="/logout">Logout</p>
-            `);
-    } else {
-        res.send(`
-            <h3>Hello, login to continue.</h3>
-            <a href="/login">Login</a>
-            `);
-    }
+// app.get("/", (req, res) => {
+//     if (req.oidc.isAuthenticated()) {
+//         res.send(`
+//             <h2>Hello, ${req.oidc.user?.name || req.oidc.user?.email}</h2>
+//             <p><a href="/logout">Logout</p>
+//             `);
+//     } else {
+//         res.send(`
+//             <h3>Hello, login to continue.</h3>
+//             <a href="/login">Login</a>
+//             `);
+//     }
+// });
+
+const clientDist = path.resolve(__dirname, "../client/dist");
+app.use(express.static(clientDist));
+
+app.get(/.*/, (_req, res, next) => {
+  if (res.headersSent) return next();
+  res.sendFile(path.join(clientDist, "index.html"));
 });
 
 app.use(userRouter);

@@ -1,0 +1,10 @@
+@import "@picocss/pico/css/pico.min.css";
+
+:root { --maxw: 900px; }
+.container { max-width: var(--maxw); margin-inline: auto; padding: 24px; }
+.grid { display: grid; gap: 16px; }
+.card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+.muted { color: #6b7280; }
+.badge { display:inline-block; padding:.25rem .5rem; border-radius:999px; border:1px solid #e5e7eb; }
+.row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.center { display:flex; justify-content:center; align-items:center; }

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireLogin } from "../auth/oidc";
+import { requireLogin } from "../auth/oidc.js";
 import prisma from "../prisma.js";
 import { ticketInputSchema, parseNumbers } from "../validation.js";
 import QRCode from "qrcode";

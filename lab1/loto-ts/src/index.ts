@@ -56,10 +56,19 @@ app.get("/db-health", async (_req, res) => {
 const clientDist = path.resolve(__dirname, "../client/dist");
 app.use(express.static(clientDist));
 
-app.get(/.*/, (_req, res, next) => {
-  if (res.headersSent) return next();
-  res.sendFile(path.join(clientDist, "index.html"));
-});
+// app.get(/.*/, (_req, res, next) => {
+//   if (res.headersSent) return next();
+//   res.sendFile(path.join(clientDist, "index.html"));
+// });
+
+app.get(
+  /^\/(?!health$|db-health$|session$|status$|new-round$|close$|store-results$|tickets$|ticket\/).*/,
+
+  (_req, res, next) => {
+    if (res.headersSent) return next();
+    res.sendFile(path.join(clientDist, "index.html"));
+  }
+);
 
 app.use(userRouter);
 app.use(adminRouter);

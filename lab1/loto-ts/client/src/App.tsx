@@ -1,15 +1,33 @@
-// client/src/App.tsx
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import StatusCard from "./components/StatusCard";
 import TicketForm from "./components/TicketForm";
 import { getSession, getStatus } from "./api";
 import type { SessionResponse, StatusResponse } from "./api";
+import TicketViewer from "./components/TicketViewer";
+
+type Tab = "home" | "pay";
 
 export default function App() {
-  const [tab, setTab] = useState<"home"|"pay">("home");
-  const [session, setSession] = useState<SessionResponse|null>(null);
-  const [status, setStatus] = useState<StatusResponse|null>(null);
+  const [tab, setTab] = useState<Tab>("home");
+  const [session, setSession] = useState<SessionResponse | null>(null);
+  const [status, setStatus] = useState<StatusResponse | null>(null);
+
+  const [path, setPath] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    const onPop = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  const onTabChange = (t: Tab) => {
+    if (window.location.pathname.startsWith("/ticket/")) {
+      window.history.pushState({}, "", "/");
+      setPath("/");
+    }
+    setTab(t);
+  };
 
   useEffect(() => {
     getSession().then(setSession).catch(() => {});
@@ -17,46 +35,45 @@ export default function App() {
   }, []);
 
   const canPay = !!session?.isAuthenticated && !!status?.round?.active;
+  const ticketCode = path.startsWith("/ticket/")
+    ? decodeURIComponent(path.slice("/ticket/".length))
+    : null;
 
   return (
     <>
-      <Header />
-      <main className="container grid">
-        <div className="row" role="tablist">
-          <button role="tab" aria-selected={tab==="home"} onClick={() => setTab("home")}>Početna</button>
-          <button role="tab" aria-selected={tab==="pay"} onClick={() => setTab("pay")} disabled={!canPay}>
-            Uplata listića {canPay ? "" : " (prijava + aktivne uplate)"}
-          </button>
-        </div>
+      <Header tab={tab} onTabChange={onTabChange} session={session} canPay={canPay} />
+      <main className="container">
+        {ticketCode ? (
+          <div className="stack">
+            <TicketViewer code={ticketCode} />
+          </div>
+        ) : tab === "home" ? (
+          <div className="stack">
+            {}
+            <div className="w-fit"><StatusCard /></div>
 
-        {tab === "home" && (
-          <>
-            <StatusCard />
-            {!session?.isAuthenticated ? (
-              <div className="card">
-                <p>Za uplatu listića potrebno je prijaviti se.</p>
-                <a role="button" href="/login">Prijava</a>
-              </div>
-            ) : (
-              <div className="card">
-                <p>Prijavljeni ste kao <strong>{session.user?.name || session.user?.email}</strong>.</p>
-                {status?.round?.active ? (
-                  <button onClick={() => setTab("pay")}>Uplati listić</button>
-                ) : (
-                  <p className="muted">Uplate nisu aktivne.</p>
-                )}
-              </div>
-            )}
-          </>
-        )}
-
-        {tab === "pay" && (
-          <TicketForm uplateAktivne={!!status?.round?.active} />
+            {}
+            <div className="card w-fit">
+              {!session?.isAuthenticated ? (
+                <p>Login required to buy a ticket.</p>
+              ) : status?.round?.active ? (
+                <button onClick={() => onTabChange("pay")}>Buy a ticket</button>
+              ) : (
+                <p className="muted">Buying a ticket is not currently available.</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="stack">
+            <div className="card w-fit">
+              <TicketForm uplateAktivne={!!status?.round?.active} />
+            </div>
+          </div>
         )}
       </main>
-      <footer className="container muted" style={{marginTop:24}}>
+      <footer className="container muted" style={{ marginTop: 24 }}>
         <hr />
-        <small>© {new Date().getFullYear()} Loto demo</small>
+        <small>© {new Date().getFullYear()} Sandro Loto</small>
       </footer>
     </>
   );

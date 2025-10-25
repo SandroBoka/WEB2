@@ -14,28 +14,28 @@ export default function StatusCard() {
 
   useEffect(() => { load(); }, []);
 
-  if (loading) return <div className="card">Učitavanje statusa…</div>;
-  if (err) return <div className="card"><strong>Greška:</strong> {err}</div>;
-  if (!data?.round) return <div className="card">Trenutno u bazi nema evidentiranih kola.</div>;
+  if (loading) return <div className="card">Loading...</div>;
+  if (err) return <div className="card"><strong>Error:</strong> {err}</div>;
+  if (!data?.round) return <div className="card">No rounds available</div>;
 
   const r = data.round;
   return (
     <div className="card">
-      <h3>Trenutno kolo</h3>
+      <h3>Current round</h3>
       <div className="row">
-        <span className="badge">ID: {r.id}</span>
-        <span className="badge">Uplate: {r.active ? "AKTIVNE" : "NEAKTIVNE"}</span>
-        <span className="badge">Broj listića: {r.ticketCount}</span>
+        <span className="badge">Round: {r.id}</span>
+        <span className="badge">Payments: {r.active ? "ACTIVE" : "NOT ACTIVE"}</span>
+        <span className="badge">Ticket count: {r.ticketCount}</span>
       </div>
       <div style={{marginTop:12}}>
-        <span className="muted">Izvučeni brojevi: </span>
+        <span className="muted">Drawn numbers: </span>
         {r.drawNumbers && !r.active ? (
           <strong>{r.drawNumbers.join(", ")}</strong>
         ) : (
-          <span className="muted">— još nisu objavljeni</span>
+          <span className="muted">— Numbers not drawn yet</span>
         )}
       </div>
-      <button onClick={load} style={{marginTop:12}}>Osvježi</button>
+      <button onClick={load} style={{marginTop:12}}>Refresh</button>
     </div>
   );
 }

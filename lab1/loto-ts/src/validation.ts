@@ -4,11 +4,6 @@ export const drawScheme = z.object({
     numbers: z.array(z.number().int())
 });
 
-/**
- * 
- * @param input either a string or array of numbers
- * @returns an array of numbers
- */
 export function parseNumbers(input: string | number[]): number[] {
     let numbers: number[] = [];
 
@@ -26,7 +21,12 @@ export function parseNumbers(input: string | number[]): number[] {
 }
 
 export const ticketInputSchema = z.object({
-    documentId: z.string().min(1, "Document ID is mandatory").max(20, "Document ID can have max 20 characters"),
+    documentId: z
+        .string()
+        .trim()
+        .min(1, "Document ID is mandatory")
+        .max(20, "Document ID can have max 20 numbers")
+        .regex(/^\d+$/, "Document ID can only have numbers"),
     numbers: z.union([
         z.string().min(1, "Numbers are mandatory"),
         z.array(z.number().int())

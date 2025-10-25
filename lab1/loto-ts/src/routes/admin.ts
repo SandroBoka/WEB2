@@ -42,7 +42,7 @@ adminRouter.post("/store-results", async (req, res, next) => {
     try {
         const parsed = drawScheme.safeParse(req.body);
         if (!parsed.success) {
-            return res.status(400).json({ error: "Bad Request" }); // krivi format
+            return res.status(400).json({ error: "Bad Request" });
         }
 
         const lastRound = await prisma.round.findFirst({
@@ -51,7 +51,7 @@ adminRouter.post("/store-results", async (req, res, next) => {
         });
 
         if (!lastRound || lastRound.isActive || lastRound.draw) {
-            return res.status(400).send("Bad Request"); // nema kola ili je aktivno ili već ima izvlačenje
+            return res.status(400).send("Bad Request");
         }
 
         await prisma.draw.create ({

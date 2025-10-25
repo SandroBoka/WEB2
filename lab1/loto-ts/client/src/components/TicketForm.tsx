@@ -5,12 +5,13 @@ export default function TicketForm({ uplateAktivne }: { uplateAktivne: boolean }
   const [documentId, setDocumentId] = useState("");
   const [numbers, setNumbers] = useState("");
   const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [ticketUrl, setTicketUrl] = useState<string | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [serverMsg, setServerMsg] = useState<string | null>(null);
 
   if (!uplateAktivne) {
-    return <div className="card">Uplate trenutno nisu aktivne.</div>;
+    return <div>Ticket payments are not currently active</div>;
   }
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -24,12 +25,13 @@ export default function TicketForm({ uplateAktivne }: { uplateAktivne: boolean }
 
     try {
       setSubmitting(true);
-      const blob = await submitTicket(documentId, numbers);
-      const url = URL.createObjectURL(blob);
-      setQrUrl(url);
-      setServerMsg("Listić uspješno zaprimljen. Skeniraj ili preuzmi QR kod.");
+      const { blob, url } = await submitTicket(documentId, numbers);
+      const obj = URL.createObjectURL(blob);
+      setQrUrl(obj);
+      setTicketUrl(url || null);
+      setServerMsg("ticket successfully  purchased . Scan or download the QR code.");
     } catch (err: any) {
-      setServerMsg(err.message || "Došlo je do pogreške.");
+      setServerMsg(err.message || "Something went wrong.");
     } finally {
       setSubmitting(false);
     }
@@ -44,56 +46,64 @@ export default function TicketForm({ uplateAktivne }: { uplateAktivne: boolean }
   };
 
   return (
-    <div className="card">
-      <h3>Uplata listića</h3>
-      <form onSubmit={onSubmit} className="grid" style={{maxWidth:520}}>
-        <label>
-          Broj osobne iskaznice ili putovnice
+    <>
+      <h3>Buy ticket</h3>
+
+      {}
+      <form onSubmit={onSubmit} className="stack w-fit">
+        <label className="stack">
+          ID or passport number
           <input
             type="text"
-            placeholder="npr. OI1234567"
+            placeholder="e.g. 0045689123"
             value={documentId}
             onChange={(e) => setDocumentId(e.target.value)}
             required
             maxLength={20}
+            size={24}
+            style={{ width: "24ch" }}
           />
         </label>
 
-        <label>
-          Brojevi (6 do 10) od 1 do 45, odvojeni zarezima
+        <label className="stack">
+          Numbers (6 to 10 numbers) from 1 to 45, seperated with a comma (",")
           <input
             type="text"
-            placeholder="npr. 3, 7, 12, 18, 33, 44"
+            placeholder="e.g. 3, 7, 12, 18, 33, 44"
             value={numbers}
             onChange={(e) => setNumbers(e.target.value)}
             required
+            size={36}
+            style={{ width: "36ch" }}
           />
         </label>
 
         {errors.length > 0 && (
           <div role="alert">
-            <ul>
-              {errors.map((er, i) => <li key={i}>• {er}</li>)}
-            </ul>
+            <ul>{errors.map((er, i) => <li key={i}>{er}</li>)}</ul>
           </div>
         )}
 
         <button type="submit" aria-busy={submitting}>
-          {submitting ? "Slanje…" : "Uplati listić"}
+          {submitting ? "Sending" : "Buy ticket"}
         </button>
       </form>
 
-      {serverMsg && <p style={{marginTop:12}}>{serverMsg}</p>}
+      {serverMsg && <p style={{ marginTop: 12 }}>{serverMsg}</p>}
 
       {qrUrl && (
-        <div className="center" style={{marginTop:16, flexDirection:"column"}}>
-          <img src={qrUrl} alt="QR kod listića" width={240} height={240} />
-          <button style={{marginTop:12}} onClick={onDownload}>Preuzmi QR</button>
-          <p className="muted" style={{marginTop:8}}>
-            Otvara <code>/ticket/&lt;code&gt;</code> stranicu na serveru (već implementirano u backendu).
-          </p>
+        <div className="stack" style={{ marginTop: 16 }}>
+          <img src={qrUrl} alt="Ticket QR code" width={240} height={240} />
+          <div className="row" style={{ gap: 8 }}>
+            <button onClick={onDownload}>Download QR code</button>
+            {ticketUrl && (
+              <a role="button" href={ticketUrl} target="_blank" rel="noopener noreferrer">
+                Open ticket
+              </a>
+            )}
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

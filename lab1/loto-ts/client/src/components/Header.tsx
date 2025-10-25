@@ -1,33 +1,57 @@
-// client/src/components/Header.tsx
-import { useEffect, useState } from "react";
-import { getSession } from "../api";
 import type { SessionResponse } from "../api";
 
-export default function Header() {
-  const [session, setSession] = useState<SessionResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+type Tab = "home" | "pay";
 
-  useEffect(() => {
-    getSession().then(setSession).finally(() => setLoading(false));
-  }, []);
+export default function Header(props: {
+  tab: Tab;
+  onTabChange: (t: Tab) => void;
+  session: SessionResponse | null;
+  canPay: boolean;
+}) {
+  const isAuth = !!props.session?.isAuthenticated;
+  const user = props.session?.user || undefined;
 
   return (
     <header className="container">
-      <nav className="row" aria-label="Main">
+      <nav className="navbar" aria-label="Main">
         <strong>Loto 6/45</strong>
-        <span style={{flex:1}} />
-        {loading ? (
-          <span className="muted">Provjera prijave…</span>
-        ) : session?.isAuthenticated ? (
-          <div className="row">
-            {session.user?.picture && (
-              <img src={session.user.picture} alt="avatar" width={28} height={28} style={{borderRadius:"50%"}} />
+
+        <button
+          role="tab"
+          aria-selected={props.tab === "home"}
+          onClick={() => props.onTabChange("home")}
+        >
+          Home
+        </button>
+
+        <button
+          role="tab"
+          aria-selected={props.tab === "pay"}
+          onClick={() => props.onTabChange("pay")}
+          disabled={!props.canPay}
+          title={props.canPay ? "Ticket purchase" : "To buy a ticket you need to be logged in and current round has to be active."}
+        >
+          Ticket purchase
+        </button>
+
+        <span className="nav-spacer" />
+
+        {isAuth ? (
+          <>
+            {user?.picture && (
+              <img
+                src={user.picture as string}
+                alt="avatar"
+                width={28}
+                height={28}
+                style={{ borderRadius: "50%" }}
+              />
             )}
-            <span className="badge">{session.user?.name || session.user?.email}</span>
-            <a role="button" href="/logout">Odjava</a>
-          </div>
+            <span className="badge">{user?.name || user?.email}</span>
+            <a role="button" href="/logout">Logout</a>
+          </>
         ) : (
-          <a role="button" href="/login">Prijava</a>
+          <a role="button" href="/login">Login</a>
         )}
       </nav>
       <hr />

@@ -13,7 +13,6 @@ const __dirname = path.dirname(__filename);
  
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(oidc);
 app.use(morgan("dev"));
@@ -39,30 +38,11 @@ app.get("/db-health", async (_req, res) => {
     }
 });
 
-// app.get("/", (req, res) => {
-//     if (req.oidc.isAuthenticated()) {
-//         res.send(`
-//             <h2>Hello, ${req.oidc.user?.name || req.oidc.user?.email}</h2>
-//             <p><a href="/logout">Logout</p>
-//             `);
-//     } else {
-//         res.send(`
-//             <h3>Hello, login to continue.</h3>
-//             <a href="/login">Login</a>
-//             `);
-//     }
-// });
-
 const clientDist = path.resolve(__dirname, "../client/dist");
 app.use(express.static(clientDist));
 
-// app.get(/.*/, (_req, res, next) => {
-//   if (res.headersSent) return next();
-//   res.sendFile(path.join(clientDist, "index.html"));
-// });
-
 app.get(
-  /^\/(?!health$|db-health$|session$|status$|new-round$|close$|store-results$|tickets$|ticket\/).*/,
+  /^\/(?!health$|db-health$|session$|status$|new-round$|close$|store-results$|tickets$|api\/).*/,
 
   (_req, res, next) => {
     if (res.headersSent) return next();

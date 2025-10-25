@@ -65,12 +65,18 @@ export function parseNumbers(input: string): number[] {
     .map((s) => Number(s));
 }
 
-export function validateTicket(documentId: string, numbersInput: string): string[] {
+export function validateID(documentId: string): string[] {
   const errors: string[] = [];
 
   if (documentId.length < 1) errors.push("Document ID is required");
   if (documentId.length > 20) errors.push("Document ID can have at most 20 characters");
   if (!/^\d+$/.test(documentId)) errors.push("Document ID must contain digits only");
+
+  return errors;
+}
+
+export function validateTicketNumbers(numbersInput: string): string[] {
+  const errors: string[] = [];
 
   const arr = parseNumbers(numbersInput);
   if (arr.length < 6 || arr.length > 10) errors.push("Enter between 6 and 10 numbers");

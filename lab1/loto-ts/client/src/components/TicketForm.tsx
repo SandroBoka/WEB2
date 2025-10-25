@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { submitTicket, validateTicket } from "../api";
+import { submitTicket, validateID, validateTicketNumbers } from "../api";
 
 export default function TicketForm({ uplateAktivne }: { uplateAktivne: boolean }) {
   const [documentId, setDocumentId] = useState("");
   const [numbers, setNumbers] = useState("");
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [ticketUrl, setTicketUrl] = useState<string | null>(null);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [numErrors, setNumErrors] = useState<string[]>([]);
+  const [idErrors, setIdErrors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [serverMsg, setServerMsg] = useState<string | null>(null);
 
@@ -19,9 +20,15 @@ export default function TicketForm({ uplateAktivne }: { uplateAktivne: boolean }
     setServerMsg(null);
     setQrUrl(null);
 
-    const errs = validateTicket(documentId, numbers);
-    if (errs.length) { setErrors(errs); return; }
-    setErrors([]);
+    const idErr = validateID(documentId);
+    const numErr = validateTicketNumbers(numbers);
+
+    setIdErrors(idErr);
+    setNumErrors(numErr);
+
+    if (idErr.length || numErr.length) {
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -65,6 +72,12 @@ export default function TicketForm({ uplateAktivne }: { uplateAktivne: boolean }
           />
         </label>
 
+        {idErrors.length > 0 && (
+          <div role="alert">
+            <ul>{idErrors.map((er, i) => <li key={i}>{er}</li>)}</ul>
+          </div>
+        )}
+
         <label className="stack">
           Numbers (6 to 10 numbers) from 1 to 45, seperated with a comma (",")
           <input
@@ -78,9 +91,9 @@ export default function TicketForm({ uplateAktivne }: { uplateAktivne: boolean }
           />
         </label>
 
-        {errors.length > 0 && (
+        {numErrors.length > 0 && (
           <div role="alert">
-            <ul>{errors.map((er, i) => <li key={i}>{er}</li>)}</ul>
+            <ul>{numErrors.map((er, i) => <li key={i}>{er}</li>)}</ul>
           </div>
         )}
 

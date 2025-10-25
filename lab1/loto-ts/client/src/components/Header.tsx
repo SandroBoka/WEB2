@@ -29,9 +29,9 @@ export default function Header(props: {
           aria-selected={props.tab === "pay"}
           onClick={() => props.onTabChange("pay")}
           disabled={!props.canPay}
-          title={props.canPay ? "Ticket purchase" : "To buy a ticket you need to be logged in and current round has to be active."}
+          title={props.canPay ? "Buy a ticket" : "To buy a ticket you need to be logged in and current round has to be active."}
         >
-          Ticket purchase
+          Buy a ticket
         </button>
 
         <span className="nav-spacer" />

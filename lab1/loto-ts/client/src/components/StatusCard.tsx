@@ -21,7 +21,7 @@ export default function StatusCard() {
   const r = data.round;
   return (
     <div className="card">
-      <h3>Current round</h3>
+      <h3>Current round info</h3>
       <div className="row">
         <span className="badge">Round: {r.id}</span>
         <span className="badge">Payments: {r.active ? "ACTIVE" : "NOT ACTIVE"}</span>

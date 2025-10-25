@@ -29,7 +29,7 @@ export default function TicketForm({ uplateAktivne }: { uplateAktivne: boolean }
       const obj = URL.createObjectURL(blob);
       setQrUrl(obj);
       setTicketUrl(url || null);
-      setServerMsg("ticket successfully  purchased . Scan or download the QR code.");
+      setServerMsg("Ticket successfully purchased. Scan or download the QR code to save it.");
     } catch (err: any) {
       setServerMsg(err.message || "Something went wrong.");
     } finally {

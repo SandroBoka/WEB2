@@ -14,7 +14,7 @@ export function getCurrentUser(req: Request): CurrentUser {
     role = q === "admin" ? "admin" : (q === "user" ? "user" : "guest")
   } else {
     // DOBRO: role zakljucujemo na serveru, ignoriramo klijenta
-    role = username === "dmin" ? "admin" : (username === "alice" ? "user" : "guest")
+    role = username === "admin" ? "admin" : (username === "alice" ? "user" : "guest")
   }
 
   return { username, role }

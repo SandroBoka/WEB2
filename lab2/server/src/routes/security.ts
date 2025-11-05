@@ -30,7 +30,7 @@ securityRouter.post("/api/toggle", (req, res) => {
 
 function isLikelyXss(input: string): boolean {
   const s = input.toLowerCase();
-  return /<script|onerror=|onload=|javascript:|<img|<svg|<iframe|<object|href\s*=\s*["']?\s*javascript:/.test(s);
+  return /<script|onerror=|onload=|javascript:|=alert|<img|<svg|<iframe|<object|href\s*=\s*["']?\s*javascript:/.test(s);
 }
 
 securityRouter.post("/api/xss", (req, res) => {

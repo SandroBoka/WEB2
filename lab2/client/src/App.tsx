@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { getState, postToggle, postXss, login, logout, getAdmin, buildAdminUrl } from "./api";
 import type { AppState } from "./types";
+import FlashBanner, { type Flash, type FlashKind } from './components/FlashBanner';
 
 import Section from "./components/Section";
 import TogglePanel from "./components/TogglePanel";
@@ -14,6 +15,13 @@ export default function App() {
   const [state, setState] = useState<AppState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const [flash, setFlash] = useState<Flash>(null);
+
+  function pushFlash(kind: FlashKind, text: string) {
+    setFlash({ kind, text });
+    setTimeout(() => setFlash(null), 4000);
+  }
 
   async function refresh() {
     try {
@@ -36,7 +44,9 @@ export default function App() {
 
   return (
     <div className="container">
-      <h1>XSS + Broken Access Control — React + TS</h1>
+      <h1>XSS + Broken Access Control</h1>
+
+      <FlashBanner flash={flash} onClose={() => setFlash(null)} />
 
       <Section title="Prekidači ranjivosti">
         <TogglePanel
@@ -55,7 +65,12 @@ export default function App() {
       >
         <XssForm
           onSubmit={async (message) => {
-            await postXss(message);
+            const result = await postXss(message);
+            if (result.saved) {
+              pushFlash("success", "Poruka je spremljena.");
+            } else {
+              pushFlash("warn", result.reason ?? "Poruka nije spremljena.");
+            }
             await refresh();
           }}
         />

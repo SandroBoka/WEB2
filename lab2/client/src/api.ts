@@ -25,7 +25,7 @@ export async function postToggle(payload: TogglePayload): Promise<void> {
     await json<{ ok: boolean }>(res);
 }
 
-export async function postXss(message: string): Promise<void> {
+export async function postXss(message: string): Promise<{ saved: boolean; reason?: string }> {
     const res = await fetch("/api/xss", {
         method: 'POST',
         credentials: 'include',
@@ -33,7 +33,12 @@ export async function postXss(message: string): Promise<void> {
         body: JSON.stringify({ message }),
     });
 
-    await json<{ ok: boolean }>(res);
+    const text = await res.text();
+    let data: any = {};
+    try { data = text ? JSON.parse(text) : {}; } catch { }
+
+    if (res.ok) return { saved: true };
+    return { saved: false, reason: data.reason || data.error || `HTTP ${res.status} ${text}` };
 }
 
 export async function login(username: string, password: string): Promise<void> {

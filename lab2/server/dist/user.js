@@ -12,7 +12,7 @@ function getCurrentUser(req) {
     }
     else {
         // DOBRO: role zakljucujemo na serveru, ignoriramo klijenta
-        role = username === "dmin" ? "admin" : (username === "alice" ? "user" : "guest");
+        role = username === "admin" ? "admin" : (username === "alice" ? "user" : "guest");
     }
     return { username, role };
 }

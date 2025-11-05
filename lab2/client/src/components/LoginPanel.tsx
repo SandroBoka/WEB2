@@ -35,7 +35,7 @@ export default function LoginPanel({ onLogin, onLogout, currentUser }: Props) {
                     <input
                         value={username}
                         onChange={e => setUsername(e.target.value)}
-                        placeholder="admin ili alice"
+                        placeholder="admin ili TestUser"
                         required
                     />
                 </label>
@@ -44,7 +44,7 @@ export default function LoginPanel({ onLogin, onLogout, currentUser }: Props) {
                     <input
                         value={password}
                         onChange={e => setPassword(e.target.value)}
-                        placeholder="admin123 ili alice123"
+                        placeholder="admin123 ili test123"
                         required
                         type="password"
                     />

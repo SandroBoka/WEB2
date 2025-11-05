@@ -43,7 +43,7 @@ securityRouter.post("/api/xss", (req, res) => {
   }
 
   state.messages.unshift(msg);
-  state.messages = state.messages.slice(0, 12);
+  state.messages = state.messages.slice(0, 20);
   log(`XSS input stored (vulnerable ON): ${msg}`);
   res.json({ ok: true });
 })
@@ -53,7 +53,7 @@ securityRouter.post("/api/login", (req, res) => {
   let ok = false, role: "guest" | "user" | "admin" = "guest"
 
   if (username === "admin" && password === "admin123") { ok = true; role = "admin" }
-  else if (username === "alice" && password === "alice123") { ok = true; role = "user" }
+  else if (username === "TestUser" && password === "test123") { ok = true; role = "user" }
 
   if (!ok) {
     log(`Login failed for ${username}`)
@@ -74,12 +74,12 @@ securityRouter.post("/api/logout", (req, res) => {
 securityRouter.get("/api/admin", (req, res) => {
   const currentUser = getCurrentUser(req)
   const allowed = state.bacEnabled
-    ? (currentUser.role === "admin")                   // RANJIVO: role iz klijenta
-    : ((req.cookies?.username as string) === "admin")  // SIGURNIJE: provjera stvarnog identiteta
+    ? (currentUser.role === "admin")
+    : ((req.cookies?.username as string) === "admin")
   if (!allowed) return res.status(403).json({ error: "Forbidden" })
 
   res.json({
-    secret: "very-secret-demo",
+    secret: "This is a very secret message, that is why it is protected!!!",
     message: `Welcome ${currentUser.username}`
   })
 })

@@ -60,7 +60,7 @@ export default function App() {
       </Section>
 
       <Section
-        title="XSS (reflected)"
+        title="XSS"
         subtitle="Kad je UKLJUČENO: poruke se prikazuju ne-escapeane (može se izvršiti JS). Kad je ISKLJUČENO: escapeano (sigurnije)."
       >
         <XssForm
@@ -78,7 +78,7 @@ export default function App() {
         <MessagesList messages={state.messages} xssEnabled={state.xssEnabled} />
       </Section>
 
-      <Section title="Prijava i BAC">
+      <Section title="Prijava i Broken Access Control">
         <LoginPanel
           onLogin={async (u, p) => {
             await login(u, p);

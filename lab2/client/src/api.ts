@@ -65,6 +65,11 @@ export async function getAdmin(): Promise<any> {
     return json<any>(res);
 }
 
+export async function getFakeAdmin(): Promise<any> {
+    const res = await fetch("/api/admin?role=admin", { credentials: "include" });
+    return json<any>(res);
+}
+
 export function buildAdminUrl(): string {
     const base = window.location.origin;
     return `${base}/api/admin`;

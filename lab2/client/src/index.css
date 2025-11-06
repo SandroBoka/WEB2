@@ -119,3 +119,16 @@ ul.logs {
   font-size: 1.1rem;
   cursor: pointer;
 }
+
+label.inline-input {
+  display: inline-flex;
+  align-items: center;
+  width: 50%;
+}
+label.inline-input input {
+  flex: 1;
+  padding: .4rem;
+}
+label input {
+  margin-left: 0.5em;
+}

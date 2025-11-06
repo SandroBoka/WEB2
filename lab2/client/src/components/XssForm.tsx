@@ -14,7 +14,7 @@ export default function XssForm({ onSubmit }: Props) {
                 setMessage("");
             }}
         >
-            <label>
+            <label className="inline-input">
                 Poruka:
                 <input
                     value={message}

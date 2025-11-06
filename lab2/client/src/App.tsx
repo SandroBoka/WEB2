@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { getState, postToggle, postXss, login, logout, getAdmin, buildAdminUrl } from "./api";
+import { getState, postToggle, postXss, login, logout, getAdmin, getFakeAdmin, buildAdminUrl } from "./api";
 import type { AppState } from "./types";
 import FlashBanner, { type Flash, type FlashKind } from './components/FlashBanner';
 
@@ -74,7 +74,7 @@ export default function App() {
             await refresh();
           }}
         />
-        <h3>Posljednje poruke</h3>
+        <h3>Poruke:</h3>
         <MessagesList messages={state.messages} xssEnabled={state.xssEnabled} />
       </Section>
 
@@ -82,7 +82,6 @@ export default function App() {
         <LoginPanel
           onLogin={async (u, p) => {
             await login(u, p);
-            window.open(buildAdminUrl(), "_blank", "noopener");
             await refresh();
           }}
           onLogout={async () => {
@@ -94,22 +93,22 @@ export default function App() {
         <p>
           {state.bacEnabled ? (
             <span className="danger">
-              RANJIVO: probaj pristupiti kao obični korisnik s dodanim <code>?role=admin</code> u URL-u pri pozivu admin endpointa.
+              RANJIVO: Obični korisnik s dodanim <code>?role=admin</code> u URL-u pri pozivu admin endpointa može pristupiti.
             </span>
           ) : (
             <span>Sigurnije: admin pristup samo za stvarnog korisnika <code>admin</code>.</span>
           )}
         </p>
-        <AdminPanel onRequest={getAdmin} />
+        <AdminPanel onAdminRequest={getAdmin} onFakeAdminRequest={getFakeAdmin}/>
         <p style={{ marginTop: ".5rem" }}>
-          URL za admin (otvara se u novom tabu):{" "}
+          URL za admin:{" "}
           <a href={buildAdminUrl()} target="_blank" rel="noopener">
             {buildAdminUrl()}
           </a>
         </p>
       </Section>
 
-      <Section title="Dnevnik (log)">
+      <Section title="Logs">
         <Logs logs={state.logs} />
       </Section>
     </div>

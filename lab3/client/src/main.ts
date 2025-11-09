@@ -16,7 +16,7 @@ const gameState: GameState = {
   phase: "start"
 }; // pocetni GameState
 
-const { cleanup } = gameInput(() => {
+const { input, cleanup } = gameInput(() => {
   if (gameState.phase === "start") {
     gameState.phase = "playing";
   }
@@ -25,4 +25,4 @@ const { cleanup } = gameInput(() => {
 const canvasContex = gameCanvas.getContext("2d")!;
 
 // pocetak glavne petlje igre
-mainGameLoop(canvasContex, gameState)
+mainGameLoop(canvasContex, gameState, input)

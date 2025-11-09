@@ -28,3 +28,10 @@ export const BALL_MOVE_ANGLE = 45;
 
 // LocalStorage kljucevi
 export const HIGHSCORE_KEY = "highscore_key";
+
+// velicina, brzina i offset palice
+export const PADDLE_WIDTH = 120;
+export const PADDLE_HEIGHT = 20;
+
+export const PADDLE_MOVE_SPEED = 400;
+export const PADDLE_BOTTOM_OFFSET = 30;

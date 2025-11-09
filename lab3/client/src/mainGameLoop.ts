@@ -8,14 +8,18 @@ import {
 } from "./constants";
 
 import type { GameState } from "./types";
+import type { PaddleInputState } from "./input";
+
+import { newPaddle, updatePaddlePosition, drawPaddle, type PaddleState } from "./paddle";
 
 // ovdje se igra vrti
-export function mainGameLoop(canvasContex: CanvasRenderingContext2D, state: GameState) {
+export function mainGameLoop(canvasContex: CanvasRenderingContext2D, state: GameState, paddleInput: PaddleInputState) {
     let measuredTime = performance.now();
+    const paddle: PaddleState = newPaddle();
 
-    // funckija koja se bavi fizikom i logikom kretanja loptice i palice
+    // funckija koja se bavi iscrtavanjem, fizikom i logikom kretanja loptice i palice
     function update(timePassed: number) {
-
+        updatePaddlePosition(paddle, paddleInput, timePassed);
     }
 
     // funkcija koja incrtava po canvasu
@@ -42,6 +46,9 @@ export function mainGameLoop(canvasContex: CanvasRenderingContext2D, state: Game
         } else if (state.phase === "gameOver") {
             drawCenteredMessage(canvasContex, "GAME OVER", "yellow");
         }
+
+        // iscrtavanje palice
+        drawPaddle(canvasContex, paddle)
     }
 
     // rekurzivno pozivanje render i frame za iscrtavanje

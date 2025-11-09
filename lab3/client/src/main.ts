@@ -1,24 +1,28 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import { CANVAS_WIDTH, CANVAS_HEIGHT, HIGHSCORE_KEY } from "./constants";
+import { mainGameLoop } from "./mainGameLoop";
+import type { GameState } from "./types";
+import { gameInput } from "./input";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+// dohvacanje gameCanvas iz index.html po id i postavljanje sirine i visine kao u zadatku
+const gameCanvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+gameCanvas.width = CANVAS_WIDTH;
+gameCanvas.height = CANVAS_HEIGHT;
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const storedHighScore = Number(localStorage.getItem(HIGHSCORE_KEY) || 0); // ako jos nije spremljeno nista onda 0
+
+const gameState: GameState = {
+  score: 0,
+  highScore: storedHighScore,
+  phase: "start"
+}; // pocetni GameState
+
+const { cleanup } = gameInput(() => {
+  if (gameState.phase === "start") {
+    gameState.phase = "playing";
+  }
+});
+
+const canvasContex = gameCanvas.getContext("2d")!;
+
+// pocetak glavne petlje igre
+mainGameLoop(canvasContex, gameState)

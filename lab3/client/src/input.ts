@@ -6,7 +6,7 @@ export interface PaddleInputState {
 
 // funckija koja prima callback za pocetak igre, a vraca input koji se azurira pri svakom pritisku i cleanp funkciju
 // koja mice eventListenere
-export function gameInput(onStart: () => void): { input: PaddleInputState; cleanup: () => void } {
+export function gameInput(onStart: () => void): PaddleInputState {
     const input: PaddleInputState = { left: false, right: false };
 
     const keydown = (event: KeyboardEvent) => {
@@ -23,10 +23,5 @@ export function gameInput(onStart: () => void): { input: PaddleInputState; clean
     window.addEventListener("keydown", keydown);
     window.addEventListener("keyup", keyup);
 
-    const cleanup = () => {
-        window.removeEventListener("keydown", keydown);
-        window.removeEventListener("keyup", keyup);
-    };
-
-    return { input, cleanup };
+    return input;
 }

@@ -16,7 +16,7 @@ const gameState: GameState = {
   phase: "start"
 }; // pocetni GameState
 
-const { input, cleanup } = gameInput(() => {
+const input = gameInput(() => {
   if (gameState.phase === "start") {
     gameState.phase = "playing";
   }

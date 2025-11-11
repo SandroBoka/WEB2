@@ -1,0 +1,10 @@
+{
+  "name": "lab3",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix client run build && npm --prefix server run build",
+    "start:prod": "npm --prefix server run start:prod",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev"
+  }
+}

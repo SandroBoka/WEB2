@@ -26,12 +26,17 @@ export const ROW_COLORS = [
 export const STARTING_BALL_SPEED = 4;
 export const BALL_MOVE_ANGLE = 45;
 
+// velicina, brzina i boja loptice
+export const BALL_RADIUS = 8;
+export const BALL_SPEED = 400;
+export const BALL_COLOR = "#EEEEEE";
+
 // LocalStorage kljucevi
 export const HIGHSCORE_KEY = "highscore_key";
 
-// velicina, brzina i offset palice
+// velicina, brzina, offset i boja palice
 export const PADDLE_WIDTH = 120;
 export const PADDLE_HEIGHT = 20;
-
 export const PADDLE_MOVE_SPEED = 400;
 export const PADDLE_BOTTOM_OFFSET = 30;
+export const PADDLE_COLOR = "#C8C8C8";

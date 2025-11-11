@@ -4,22 +4,40 @@ import {
     CURRENT_SCORE_POSITION,
     HIGHSCORE_RIGHT_OFFSET,
     HIGHSCORE_TOP_OFFSET,
-
+    BALL_RADIUS
 } from "./constants";
 
 import type { GameState } from "./types";
 import type { PaddleInputState } from "./input";
 
 import { newPaddle, updatePaddlePosition, drawPaddle, type PaddleState } from "./paddle";
+import {
+    newBall, updateBallPosition, drawBall, placeBallOnPaddle, startMovingBall, handlePaddleCollison, handleWallCollison, type BallState
+} from "./ball";
 
 // ovdje se igra vrti
 export function mainGameLoop(canvasContex: CanvasRenderingContext2D, state: GameState, paddleInput: PaddleInputState) {
     let measuredTime = performance.now();
     const paddle: PaddleState = newPaddle();
+    const ball: BallState = newBall(paddle );
 
     // funckija koja se bavi iscrtavanjem, fizikom i logikom kretanja loptice i palice
     function update(timePassed: number) {
         updatePaddlePosition(paddle, paddleInput, timePassed);
+
+        if (state.phase == "start") {
+            placeBallOnPaddle(ball, paddle);
+        } else if (state.phase == "playing") {
+            if (!ball.isMoving) startMovingBall(ball);
+
+            updateBallPosition(ball, timePassed);
+            handleWallCollison(ball);
+            handlePaddleCollison(ball, paddle);
+
+            if (ball.yPosition - BALL_RADIUS > CANVAS_HEIGHT) {
+                state.phase = "gameOver"
+            }
+        }
     }
 
     // funkcija koja incrtava po canvasu
@@ -47,8 +65,9 @@ export function mainGameLoop(canvasContex: CanvasRenderingContext2D, state: Game
             drawCenteredMessage(canvasContex, "GAME OVER", "yellow");
         }
 
-        // iscrtavanje palice
-        drawPaddle(canvasContex, paddle)
+        // iscrtavanje palice i loptice
+        drawPaddle(canvasContex, paddle);
+        drawBall(canvasContex, ball);
     }
 
     // rekurzivno pozivanje render i frame za iscrtavanje

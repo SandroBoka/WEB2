@@ -4,12 +4,14 @@ import {
     PADDLE_WIDTH,
     PADDLE_HEIGHT,
     PADDLE_MOVE_SPEED,
-    PADDLE_BOTTOM_OFFSET
+    PADDLE_BOTTOM_OFFSET,
+    PADDLE_COLOR
 } from "./constants";
 
 import type { PaddleInputState } from "./input";
 import { draw3DRectangle } from "./renderHelpers";
 
+// stanje koje opisuje palicu
 export interface PaddleState {
     xPosition: number;
     yPosition: number;
@@ -18,7 +20,7 @@ export interface PaddleState {
     paddleSpeed: number;
 }
 
-// vraca novi PaddleState
+// vraca novi (inicijalni) PaddleState
 export function newPaddle(): PaddleState {
     return {
         xPosition: (CANVAS_WIDTH - PADDLE_WIDTH) / 2,
@@ -31,9 +33,7 @@ export function newPaddle(): PaddleState {
 
 // funkcija koja iscrtava pailicu
 export function drawPaddle(canvasContex: CanvasRenderingContext2D, paddle: PaddleState) {
-    const paddleColor = "#C8C8C8";
-
-    draw3DRectangle(canvasContex, paddle.xPosition, paddle.yPosition, paddle.paddleWidth, paddle.paddleHeight, paddleColor, 3);
+    draw3DRectangle(canvasContex, paddle.xPosition, paddle.yPosition, paddle.paddleWidth, paddle.paddleHeight, PADDLE_COLOR, 3);
 }
 
 // azuriranje pozicije palice

@@ -15,7 +15,7 @@ body {
   place-items: center;
 }
 
-canvas#game {
+canvas#gameCanvas {
   background: #000;
   border: 5px solid #fff;
 }

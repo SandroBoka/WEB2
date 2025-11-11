@@ -11,11 +11,11 @@ import {
     MAX_BALL_SPEED,
     CORNER_MULTIPLIER,
     BALL_RADIUS
-} from "./constants";
+} from "../helpers/constants";
 
-import { draw3DRectangle } from "./renderHelpers";
+import { draw3DRectangle } from "../helpers/renderHelpers";
 import type { BallState } from "./ball";
-import type { GameState } from "./types";
+import type { GameState } from "../helpers/types";
 
 // struktura koja opisuje ciglu
 export interface Brick {

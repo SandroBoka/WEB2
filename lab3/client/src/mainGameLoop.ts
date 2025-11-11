@@ -6,15 +6,15 @@ import {
     HIGHSCORE_TOP_OFFSET,
     BALL_RADIUS,
     HIGHSCORE_KEY
-} from "./constants";
+} from "./helpers/constants";
 
-import type { GameState } from "./types";
+import type { GameState } from "./helpers/types";
 import type { PaddleInputState } from "./input";
 
-import { newPaddle, updatePaddlePosition, drawPaddle, type PaddleState } from "./paddle";
-import { newBall, updateBallPosition, drawBall, placeBallOnPaddle, startMovingBall } from "./ball";
-import { handlePaddleCollison, handleWallCollison, type BallState } from "./ball";
-import { newBrickGrid, drawBricks, handleBrickCollisions } from "./bricks";
+import { newPaddle, updatePaddlePosition, drawPaddle, type PaddleState } from "./components/paddle";
+import { newBall, updateBallPosition, drawBall, placeBallOnPaddle, startMovingBall } from "./components/ball";
+import { handlePaddleCollison, handleWallCollison, type BallState } from "./components/ball";
+import { newBrickGrid, drawBricks, handleBrickCollisions } from "./components/bricks";
 
 
 // ovdje se igra vrti

@@ -6,10 +6,10 @@ import {
     PADDLE_MOVE_SPEED,
     PADDLE_BOTTOM_OFFSET,
     PADDLE_COLOR
-} from "./constants";
+} from "../helpers/constants";
 
-import type { PaddleInputState } from "./input";
-import { draw3DRectangle } from "./renderHelpers";
+import type { PaddleInputState } from "../input";
+import { draw3DRectangle } from "../helpers/renderHelpers";
 
 // stanje koje opisuje palicu
 export interface PaddleState {

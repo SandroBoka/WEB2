@@ -3,10 +3,10 @@ import {
     BALL_RADIUS,
     BALL_SPEED,
     BALL_COLOR
-} from "./constants";
+} from "../helpers/constants";
 
 import type { PaddleState } from "./paddle";
-import { draw3DCircle } from "./renderHelpers";
+import { draw3DCircle } from "../helpers/renderHelpers";
 
 // stanje koje opisuje lopticu
 export interface BallState {

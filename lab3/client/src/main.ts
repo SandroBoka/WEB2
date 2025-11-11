@@ -1,6 +1,6 @@
-import { CANVAS_WIDTH, CANVAS_HEIGHT, HIGHSCORE_KEY } from "./constants";
+import { CANVAS_WIDTH, CANVAS_HEIGHT, HIGHSCORE_KEY } from "./helpers/constants";
 import { mainGameLoop } from "./mainGameLoop";
-import type { GameState } from "./types";
+import type { GameState } from "./helpers/types";
 import { gameInput } from "./input";
 
 // dohvacanje gameCanvas iz index.html po id i postavljanje sirine i visine kao u zadatku

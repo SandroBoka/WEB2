@@ -40,7 +40,7 @@ export const BALL_SPEED = 400;
 export const BALL_COLOR = "#EEEEEE";
 
 export const MAX_BALL_SPEED = 900;
-export const CORNER_MULTIPLIER = 1.015;
+export const CORNER_MULTIPLIER = 1.025;
 
 // LocalStorage kljucevi
 export const HIGHSCORE_KEY = "highscore_key";

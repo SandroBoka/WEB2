@@ -4,22 +4,25 @@ import {
     CURRENT_SCORE_POSITION,
     HIGHSCORE_RIGHT_OFFSET,
     HIGHSCORE_TOP_OFFSET,
-    BALL_RADIUS
+    BALL_RADIUS,
+    HIGHSCORE_KEY
 } from "./constants";
 
 import type { GameState } from "./types";
 import type { PaddleInputState } from "./input";
 
 import { newPaddle, updatePaddlePosition, drawPaddle, type PaddleState } from "./paddle";
-import {
-    newBall, updateBallPosition, drawBall, placeBallOnPaddle, startMovingBall, handlePaddleCollison, handleWallCollison, type BallState
-} from "./ball";
+import { newBall, updateBallPosition, drawBall, placeBallOnPaddle, startMovingBall } from "./ball";
+import { handlePaddleCollison, handleWallCollison, type BallState } from "./ball";
+import { newBrickGrid, drawBricks, handleBrickCollisions } from "./bricks";
+
 
 // ovdje se igra vrti
 export function mainGameLoop(canvasContex: CanvasRenderingContext2D, state: GameState, paddleInput: PaddleInputState) {
     let measuredTime = performance.now();
     const paddle: PaddleState = newPaddle();
     const ball: BallState = newBall(paddle );
+    const grid = newBrickGrid();
 
     // funckija koja se bavi iscrtavanjem, fizikom i logikom kretanja loptice i palice
     function update(timePassed: number) {
@@ -34,8 +37,19 @@ export function mainGameLoop(canvasContex: CanvasRenderingContext2D, state: Game
             handleWallCollison(ball);
             handlePaddleCollison(ball, paddle);
 
+            const remainingBricks = handleBrickCollisions(ball, grid, state);
+            if (remainingBricks == 0) {
+                state.phase = "gameEnd"; // igrac je pobjedio
+            }
+
+            if (state.score > state.highScore) {
+                state.highScore = state.score;
+                localStorage.setItem(HIGHSCORE_KEY, String(state.highScore))
+            }
+
+            // kraj igre
             if (ball.yPosition - BALL_RADIUS > CANVAS_HEIGHT) {
-                state.phase = "gameOver"
+                state.phase = "gameOver";
             }
         }
     }
@@ -68,6 +82,9 @@ export function mainGameLoop(canvasContex: CanvasRenderingContext2D, state: Game
         // iscrtavanje palice i loptice
         drawPaddle(canvasContex, paddle);
         drawBall(canvasContex, ball);
+
+        // iscrtavanje mreze kocka
+        drawBricks(canvasContex, grid);
     }
 
     // rekurzivno pozivanje render i frame za iscrtavanje

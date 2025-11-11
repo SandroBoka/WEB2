@@ -13,6 +13,14 @@ export const HIGHSCORE_TOP_OFFSET = 20;
 export const BRICK_ROWS = 5;
 export const BRICK_COLUMNS = 10;
 
+// dimenzije kocka
+export const BRICK_WIDTH = 50
+export const BRICK_HEIGHT = 15;
+export const BRICK_HORIZONTAL_GAP = 38;
+export const BRICK_VERTICAL_GAP = 15;
+export const BRICK_TOP_OFFSET = 90;
+export const BRICK_SIDE_MARGIN = 30;  
+
 // boje po redovima
 export const ROW_COLORS = [
     "rgb(153, 51, 0)",
@@ -31,12 +39,15 @@ export const BALL_RADIUS = 8;
 export const BALL_SPEED = 400;
 export const BALL_COLOR = "#EEEEEE";
 
+export const MAX_BALL_SPEED = 900;
+export const CORNER_MULTIPLIER = 1.015;
+
 // LocalStorage kljucevi
 export const HIGHSCORE_KEY = "highscore_key";
 
 // velicina, brzina, offset i boja palice
 export const PADDLE_WIDTH = 120;
 export const PADDLE_HEIGHT = 20;
-export const PADDLE_MOVE_SPEED = 400;
+export const PADDLE_MOVE_SPEED = 500;
 export const PADDLE_BOTTOM_OFFSET = 30;
 export const PADDLE_COLOR = "#C8C8C8";

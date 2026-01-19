@@ -1,5 +1,12 @@
 <template>
-    <article class="card">
+    <article
+        class="card"
+        :class="{ clickable: clubTarget }"
+        :tabindex="clubTarget ? 0 : -1"
+        :role="clubTarget ? 'button' : null"
+        @click="openClub"
+        @keyup.enter="openClub"
+    >
         <header class="cardHeader">
             <h3>Player: {{ playerName }}</h3>
 
@@ -22,7 +29,7 @@
         <footer class="cardFooter">
             <small>Date: {{ item.date }}</small>
 
-            <button type="button" @click="$emit('toggle-fav', item.id)">
+            <button type="button" @click.stop="$emit('toggle-fav', item.id)">
                 {{ isFav ? "Unfavorite" : "Favorite" }}
             </button>
         </footer>
@@ -37,6 +44,16 @@ export default {
         playerName() {
             const name = (this.item.player || "").trim();
             return name || "Unknown player";
+        },
+        clubTarget() {
+            return this.item.to || this.item.from || "";
+        },
+    },
+    methods: {
+        openClub() {
+            if (!this.clubTarget) return;
+            const slug = this.clubTarget.toLowerCase().replace(/\s+/g, "-");
+            this.$router.push(`/clubs/${slug}`);
         },
     },
 };
@@ -107,6 +124,15 @@ export default {
 .card:hover {
     transform: translateY(-2px);
     box-shadow: 0 22px 36px rgba(31, 28, 22, 0.14);
+}
+
+.card.clickable {
+    cursor: pointer;
+}
+
+.card.clickable:focus {
+    outline: 2px solid rgba(210, 109, 84, 0.4);
+    outline-offset: 2px;
 }
 
 @keyframes cardIn {

@@ -2,9 +2,12 @@
     <section>
         <h1>Favorites</h1>
 
-        <p v-if="favItems.length === 0">No favorites yet.</p>
+        <p v-if="favItems.length === 0" class="emptyState">No favorites yet.</p>
 
-        <NewsCard v-for="it in favItems" :key="it.id" :item="it" :isFav="true" @toggle-fav="news.toggleFavorite" />
+        <div v-else class="cards">
+            <NewsCard v-for="it in favItems" :key="it.id" :item="it" :isFav="true"
+                @toggle-fav="news.toggleFavorite" />
+        </div>
     </section>
 </template>
 

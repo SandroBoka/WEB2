@@ -10,11 +10,13 @@
         <div v-else>
             <p>Showing {{ filteredNews.length }} items</p>
 
-            <NewsCard v-for="it in filteredNews" :key="it.id" :item="it" :isFav="news.isFavorite(it.id)"
-                @toggle-fav="news.toggleFavorite" />
+            <div class="cards">
+                <NewsCard v-for="it in filteredNews" :key="it.id" :item="it" :isFav="news.isFavorite(it.id)"
+                    @toggle-fav="news.toggleFavorite" />
+            </div>
 
             <h2>Quick clubs</h2>
-            <ul>
+            <ul class="clubList">
                 <li v-for="c in news.clubs" :key="c">
                     <RouterLink :to="`/clubs/${slug(c)}`">{{ c }}</RouterLink>
                 </li>

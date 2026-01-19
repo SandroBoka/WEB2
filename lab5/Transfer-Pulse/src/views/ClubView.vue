@@ -2,10 +2,12 @@
     <section>
         <h1>Club: {{ clubDisplay }}</h1>
 
-        <p v-if="items.length === 0">No items for this club.</p>
+        <p v-if="items.length === 0" class="emptyState">No items for this club.</p>
 
-        <NewsCard v-for="it in items" :key="it.id" :item="it" :isFav="news.isFavorite(it.id)"
-            @toggle-fav="news.toggleFavorite" />
+        <div v-else class="cards">
+            <NewsCard v-for="it in items" :key="it.id" :item="it" :isFav="news.isFavorite(it.id)"
+                @toggle-fav="news.toggleFavorite" />
+        </div>
     </section>
 </template>
 

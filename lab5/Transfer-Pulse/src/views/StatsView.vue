@@ -2,14 +2,14 @@
     <section>
         <h1>Stats</h1>
 
-        <div class="statsSummary">
+        <div class="panel statsSummary">
             <p>Clubs: {{ clubsCount }}</p>
             <p>Transfers: {{ transfersCount }}</p>
             <p>Loans: {{ loansCount }}</p>
             <p>Favorites: {{ favoritesCount }}</p>
         </div>
 
-        <div class="clubStats">
+        <div class="panel clubStats">
             <label class="clubLabel">
                 Club
                 <select v-model="selectedClub">
@@ -30,15 +30,30 @@
                 <p>Total loans: {{ clubStats.loansTotal }}</p>
             </div>
 
-            <p v-else>Select a club to see detailed stats.</p>
+            <p v-else class="emptyState">Select a club to see detailed stats.</p>
+        </div>
+
+        <div v-if="selectedClub">
+            <h2>Club activity</h2>
+
+            <p v-if="clubItems.length === 0" class="emptyState">
+                No transfers or loans for this club.
+            </p>
+
+            <div v-else class="cards">
+                <NewsCard v-for="it in clubItems" :key="it.id" :item="it" :isFav="news.isFavorite(it.id)"
+                    @toggle-fav="news.toggleFavorite" />
+            </div>
         </div>
     </section>
 </template>
 
 <script>
 import { useNewsStore } from "../stores/news";
+import NewsCard from "../components/NewsCard.vue";
 
 export default {
+    components: { NewsCard },
     data() {
         return { news: useNewsStore(), selectedClub: "" };
     },
@@ -94,6 +109,12 @@ export default {
         formattedSpent() {
             return this.formatPounds(this.clubStats.spent);
         },
+        clubItems() {
+            if (!this.selectedClub) return [];
+            return this.news.allNews.filter((item) => {
+                return item.from === this.selectedClub || item.to === this.selectedClub;
+            });
+        },
     },
     methods: {
         parseFee(fee) {
@@ -125,16 +146,36 @@ export default {
 <style scoped>
 .statsSummary {
     margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px 12px;
+}
+
+.statsSummary p,
+.clubStats p {
+    margin: 0;
+}
+
+.clubStats p {
+    color: var(--muted);
+    font-weight: 600;
 }
 
 .clubLabel {
     display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 8px;
+    gap: 6px;
+    align-items: flex-start;
+    flex-direction: column;
+    font-weight: 600;
 }
 
 .clubStats select {
-    padding: 4px 6px;
+    width: 100%;
+}
+
+.clubStats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 </style>

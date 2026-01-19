@@ -44,9 +44,34 @@ export default {
 
 <style scoped>
 .filters {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1.4fr 1fr 1fr auto;
+    align-items: center;
+    padding: 12px;
+    margin: 0 auto 18px;
+    max-width: 780px;
+    border-radius: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+}
+
+.filters input,
+.filters select {
+    width: 100%;
+}
+
+.filters button {
+    justify-self: end;
+}
+
+@media (max-width: 760px) {
+    .filters {
+        grid-template-columns: 1fr;
+    }
+    .filters button {
+        justify-self: stretch;
+    }
 }
 </style>

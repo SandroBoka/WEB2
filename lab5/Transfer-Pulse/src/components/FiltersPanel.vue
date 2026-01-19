@@ -70,8 +70,5 @@ export default {
     .filters {
         grid-template-columns: 1fr;
     }
-    .filters button {
-        justify-self: stretch;
-    }
 }
 </style>

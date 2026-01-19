@@ -202,27 +202,42 @@ select {
   font-size: 14px;
 }
 
+.buttonLike,
 button {
-  border: none;
+  appearance: none;
+  border: 1px solid transparent;
   border-radius: 999px;
-  padding: 8px 16px;
+  padding: 8px 18px;
   font-weight: 600;
   background: var(--accent);
   color: #fff;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
   box-shadow: 0 2px 6px rgba(210, 109, 84, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
+.buttonLike:hover,
 button:hover {
   background: var(--accent-strong);
   box-shadow: 0 6px 14px rgba(210, 109, 84, 0.3);
   transform: translateY(-1px);
 }
 
+.buttonLike:active,
 button:active {
   transform: translateY(0);
   box-shadow: none;
+}
+
+.buttonLike:focus-visible,
+button:focus-visible {
+  outline: 2px solid rgba(210, 109, 84, 0.4);
+  outline-offset: 2px;
 }
 
 @keyframes pageIn {

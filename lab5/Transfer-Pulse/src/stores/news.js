@@ -12,8 +12,10 @@ export const useNewsStore = defineStore("news", {
     getters: {
         allNews: (state) => state.items,
         isFavorite: (state) => (id) => state.favorites.has(id),
-
-        clubs: (state) => [...new Set(state.items.map((x) => x.club))].sort(),
+        clubs: (state) => {
+            const all = state.items.flatMap((x) => [x.from, x.to]);
+            return [...new Set(all)].filter(Boolean).sort();
+        },
         nations: (state) => [...new Set(state.items.map((x) => x.nation))].sort(),
     },
 

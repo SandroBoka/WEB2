@@ -47,7 +47,7 @@ export default {
     border: 1px solid var(--border);
     padding: 16px;
     border-radius: var(--radius);
-    background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
+    background: var(--surface);
     box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
@@ -96,7 +96,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding-top: 8px;
-    border-top: 1px dashed var(--border);
+    border-top: 1px solid var(--border);
     color: var(--muted);
 }
 

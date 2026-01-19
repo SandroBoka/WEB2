@@ -22,18 +22,18 @@ import { RouterLink, RouterView } from "vue-router";
 @import url("https://fonts.googleapis.com/css2?family=Newsreader:wght@500;700&family=Space+Grotesk:wght@400;600&display=swap");
 
 :root {
-  --bg: #f5f1ea;
+  --bg: #f3f1ee;
   --surface: #fffdf9;
-  --surface-alt: #f7efe4;
-  --ink: #1f1c16;
-  --muted: #6f675e;
-  --accent: #e07a5f;
-  --accent-strong: #c65f47;
+  --surface-alt: #f0ebe2;
+  --ink: #1e1c19;
+  --muted: #5b564f;
+  --accent: #d26d54;
+  --accent-strong: #b85b46;
   --accent-cool: #2f5d62;
-  --border: #e6ddd1;
-  --shadow-soft: 0 10px 22px rgba(31, 28, 22, 0.08);
-  --shadow-card: 0 16px 34px rgba(31, 28, 22, 0.12);
-  --radius: 16px;
+  --border: #e0d9cf;
+  --shadow-soft: 0 1px 2px rgba(30, 28, 25, 0.12), 0 6px 16px rgba(30, 28, 25, 0.08);
+  --shadow-card: 0 2px 4px rgba(30, 28, 25, 0.12), 0 10px 24px rgba(30, 28, 25, 0.12);
+  --radius: 12px;
 }
 
 * {
@@ -45,21 +45,9 @@ body {
   min-height: 100vh;
   font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
   color: var(--ink);
-  background: linear-gradient(180deg, #f7f3ec 0%, #efe7db 100%);
+  background: var(--bg);
   position: relative;
   overflow-x: hidden;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(520px 380px at 8% 10%, rgba(224, 122, 95, 0.16), transparent 60%),
-    radial-gradient(520px 380px at 92% 12%, rgba(47, 93, 98, 0.14), transparent 60%),
-    radial-gradient(540px 400px at 82% 90%, rgba(244, 162, 97, 0.16), transparent 60%);
-  pointer-events: none;
-  z-index: 0;
 }
 
 #app {
@@ -106,9 +94,9 @@ section {
   position: sticky;
   top: 0;
   z-index: 2;
-  backdrop-filter: blur(8px);
-  background: rgba(245, 241, 234, 0.9);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(30, 28, 25, 0.08);
 }
 
 .topbarInner {
@@ -123,7 +111,7 @@ section {
   display: inline-flex;
   gap: 6px;
   padding: 6px;
-  border-radius: 999px;
+  border-radius: 12px;
   background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-soft);
@@ -131,7 +119,7 @@ section {
 
 .tab {
   padding: 8px 16px;
-  border-radius: 999px;
+  border-radius: 10px;
   font-weight: 600;
   color: var(--muted);
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
@@ -146,7 +134,7 @@ section {
 .tab.router-link-exact-active {
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 8px 18px rgba(224, 122, 95, 0.3);
+  box-shadow: 0 6px 12px rgba(210, 109, 84, 0.35);
 }
 
 .container {
@@ -222,12 +210,13 @@ button {
   background: var(--accent);
   color: #fff;
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(210, 109, 84, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 button:hover {
   background: var(--accent-strong);
-  box-shadow: 0 10px 18px rgba(224, 122, 95, 0.3);
+  box-shadow: 0 6px 14px rgba(210, 109, 84, 0.3);
   transform: translateY(-1px);
 }
 

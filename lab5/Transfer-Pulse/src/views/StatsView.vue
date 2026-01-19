@@ -135,11 +135,6 @@ export default {
             return `GBP ${rounded.toLocaleString("en-GB")}`;
         },
     },
-    async mounted() {
-        if (!this.news.allNews.length) {
-            await this.news.refreshNews();
-        }
-    },
 };
 </script>
 

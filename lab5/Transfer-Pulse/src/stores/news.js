@@ -21,7 +21,7 @@ export const useNewsStore = defineStore("news", {
 
     actions: {
         async refreshNews() {
-            // asynchrone
+            // async
             this.loading = true;
             this.error = null;
             try {

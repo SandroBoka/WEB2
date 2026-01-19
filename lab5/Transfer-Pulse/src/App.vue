@@ -1,5 +1,15 @@
 <script setup>
+import { onMounted } from "vue";
 import { RouterLink, RouterView } from "vue-router";
+import { useNewsStore } from "./stores/news";
+
+const news = useNewsStore();
+
+onMounted(async () => {
+  if (!news.allNews.length) {
+    await news.refreshNews();
+  }
+});
 </script>
 
 <template>

@@ -69,8 +69,5 @@ export default {
         },
     },
 
-    async mounted() {
-        await this.news.refreshNews();
-    },
 };
 </script>

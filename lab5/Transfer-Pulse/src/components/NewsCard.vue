@@ -1,7 +1,7 @@
 <template>
     <article class="card">
         <header class="cardHeader">
-            <h3>{{ item.player }}</h3>
+            <h3>Player: {{ playerName }}</h3>
 
             <small class="meta">
                 <span class="badge">{{ item.type.toUpperCase() }}</span>
@@ -33,6 +33,12 @@
 export default {
     props: ["item", "isFav"],
     emits: ["toggle-fav"],
+    computed: {
+        playerName() {
+            const name = (this.item.player || "").trim();
+            return name || "Unknown player";
+        },
+    },
 };
 </script>
 

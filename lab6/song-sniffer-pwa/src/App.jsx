@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [online, setOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const onOnline = () => setOnline(true);
+    const onOffline = () => setOnline(false);
+
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+
+    return () => {
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+    };
+  },
+  []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={{ maxWidth: 720, margin: "0 auto", padding: 16, fontFamily: "system-ui" }}>
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+        <h1 style={{ margin: 0 }}>SongSniffer</h1>
+        <span
+          style={{
+            padding: "4px 8px",
+            borderRadius: 999,
+            border: "1px solid #ccc",
+            fontSize: 12,
+          }}
+          aria-label={online ? "Online" : "Offline"}
+        >
+          {online ? "Online" : "Offline"}
+        </span>
+      </header>
 
-export default App
+      <p style={{ lineHeight: 1.5 }}>
+        Prepoznaj pjesmu iz <b>uploadanog audio isječka</b> ili snimi <b>12 sekundi</b> mikrofonom.
+        Ako nema interneta, isječak se sprema i šalje kad se veza vrati.
+      </p>
+
+      <section style={{ display: "grid", gap: 12 }}>
+        <button type="button">🎙️ Snimi 12s (mikrofon)</button>
+        <button type="button">📁 Upload audio isječka</button>
+        <button type="button" disabled>
+          🔄 Sync pending (kasnije)
+        </button>
+      </section>
+
+      <hr style={{ margin: "16px 0" }} />
+
+      <section>
+        <h2 style={{ marginTop: 0 }}>Povijest</h2>
+        <p style={{ color: "#555" }}>
+          Ovdje će kasnije biti lista prepoznatih pjesama i pending snimki (offline queue).
+        </p>
+      </section>
+    </div>
+  );
+}

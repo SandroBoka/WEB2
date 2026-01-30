@@ -2,6 +2,56 @@ import { useEffect, useState } from "react";
 
 export default function App() {
   const [online, setOnline] = useState(navigator.onLine);
+  const [recording, setRecording] = useState(false);
+  const [countdown, setCountdown] = useState(12);
+  const [lastRecording, setLastRecording] = useState(null)
+
+  const canRecord = "mediaDevices" in navigator && "getUserMedia" in navigator.mediaDevices && "MediaRecorder" in window;
+
+  async function record12Seconds() {
+    if (!canRecord || recording) return;
+
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    const recorder = new MediaRecorder(stream);
+    const chunks = [];
+
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) chunks.push(e.data);
+    };
+
+    recorder.start();
+    setRecording(true);
+    setCountdown(12);
+
+    setTimeout(() => {
+      recorder.stop()
+      stream.getTracks().forEach((t) => t.stop());
+    }, 12_000);
+
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: recorder.mimeType });
+      setLastRecording(blob);
+      setRecording(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!recording) return;
+
+    const id = setInterval(() => {
+      setCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(id);
+
+          return 0;
+        }
+        
+        return c - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [recording]);
 
   useEffect(() => {
     const onOnline = () => setOnline(true);
@@ -40,7 +90,17 @@ export default function App() {
       </p>
 
       <section style={{ display: "grid", gap: 12 }}>
-        <button type="button">🎙️ Snimi 12s (mikrofon)</button>
+        {canRecord && (
+          <button type="button" onClick={record12Seconds} disabled={recording}>
+            {recording ? `🎙️ Recording (${countdown})` : "🎙️ Record 12s of audio"}
+          </button>
+        )}
+        {lastRecording && (
+          <div>
+            <p>Last Audio:</p>
+            <audio controls src={URL.createObjectURL(lastRecording)} />
+          </div>
+        )}
         <button type="button">📁 Upload audio isječka</button>
         <button type="button" disabled>
           🔄 Sync pending (kasnije)

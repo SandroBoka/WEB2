@@ -1,7 +1,7 @@
 {
   "name": "SongSniffer",
   "short_name": "SongSniffer",
-  "description": "Prepoznaj pjesmu iz audio isječka ili snimke mikrofonom. Offline queue + background sync + push.",
+  "description": "Find out which song is playing from a short audio sample. Offline queue + background sync + push.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -15,7 +15,7 @@ export default function App() {
       window.removeEventListener("offline", onOffline);
     };
   },
-  []);
+    []);
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", padding: 16, fontFamily: "system-ui" }}>

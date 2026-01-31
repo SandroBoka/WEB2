@@ -24,10 +24,10 @@ body {
 }
 
 .app-shell {
+  width: 100%;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   padding: 48px 20px;
   background:
     radial-gradient(700px 700px at 8% 0%, #ffe8c7 0%, transparent 62%),
@@ -39,6 +39,7 @@ body {
 
 .app-card {
   width: min(1000px, 100%);
+  margin: 0 auto;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: var(--radius);

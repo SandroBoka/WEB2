@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:all": "npm --prefix server install && npm run build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/index.js",
+    "postinstall": "npm --prefix server install"
   },
   "dependencies": {
     "idb": "^8.0.3",

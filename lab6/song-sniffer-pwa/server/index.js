@@ -3,6 +3,9 @@ import multer from "multer";
 import fetch from "node-fetch";
 import FormData from "form-data";
 import webpush from "web-push";
+import path from "path";
+import { fileURLToPath } from "url";
+
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -18,6 +21,14 @@ if (vapidPublicKey && vapidPrivateKey && vapidSubject) {
 }
 
 const subscriptions = new Set();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const distPath = path.join(__dirname, "..", "dist");
+
+app.use(express.static(distPath));
+
 
 // heatlh check
 app.get("/api/health", (req, res) => {
@@ -137,6 +148,10 @@ async function sendPushToAll(payloadObj) {
         }
     }
 }
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
+});
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {

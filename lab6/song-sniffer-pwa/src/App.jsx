@@ -12,6 +12,24 @@ export default function App() {
 
   const canRecord = "mediaDevices" in navigator && "getUserMedia" in navigator.mediaDevices && "MediaRecorder" in window;
 
+  async function refreshItems() {
+    const all = await listRecordings()
+    all.sort((a, b) => b.createdAt - a.createdAt);
+    setItems(all);
+  }
+
+  async function registerSync() {
+    if (!("serviceWorker" in navigator)) return;
+    if (!("SyncManager" in window)) return;
+
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      await reg.sync.register("sync-recordings");
+    } catch (err) {
+      console.warn("registerSync failed:", err);
+    }
+  }
+
   async function record12Seconds() {
     if (!canRecord || recording) return;
 
@@ -34,17 +52,17 @@ export default function App() {
 
     recorder.onstop = async () => {
       const blob = new Blob(chunks, { type: recorder.mimeType });
-      await addRecording({ blob, source: "mic" });
-      setLastRecording(blob);
-      setRecording(false);
-      await refreshItems();
+      try {
+        await addRecording({ blob, source: "mic" });
+        setLastRecording(blob);
+        await refreshItems();
+        await registerSync();
+      } catch (err) {
+        console.error("Error saving recording:", err);
+      } finally {
+        setRecording(false);
+      }
     }
-  }
-
-  async function refreshItems() {
-    const all = await listRecordings()
-    all.sort((a, b) => b.createdAt - a.createdAt);
-    setItems(all);
   }
 
   useEffect(() => {
@@ -54,6 +72,7 @@ export default function App() {
   useEffect(() => {
     if (!lastRecording) {
       setLastUrl(null);
+
       return;
     }
 
@@ -97,7 +116,23 @@ export default function App() {
   }, [recording]);
 
   useEffect(() => {
-    const onOnline = () => setOnline(true);
+    if (!("serviceWorker" in navigator)) return;
+
+    const handler = (event) => {
+      if (event.data?.type === "SYNC_DONE") {
+        refreshItems();
+      }
+    };
+
+    navigator.serviceWorker.addEventListener("message", handler);
+    return () => navigator.serviceWorker.removeEventListener("message", handler);
+  }, []);
+
+  useEffect(() => {
+    const onOnline = () => {
+      setOnline(true);
+      refreshItems();
+    };
     const onOffline = () => setOnline(false);
 
     window.addEventListener("online", onOnline);

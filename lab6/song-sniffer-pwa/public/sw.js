@@ -102,7 +102,7 @@ async function updateItem(db, id, patch) {
 
       if (!current) return resolve(null);
 
-      const next = { ...current, ...patch};
+      const next = { ...current, ...patch };
       const putReq = store.put(next);
 
       putReq.onerror = () => reject(putReq.error);
@@ -132,18 +132,30 @@ async function syncPendingRecordings() {
       });
 
       if (!res.ok) {
-        await updateItem(db, item.id, { status: "failed", error: "Upload failed" });
+        await updateItem(db, item.id, {
+          status: "failed",
+          result: null,
+          error: "Upload failed"
+        });
 
         continue;
       }
 
       const data = await res.json();
 
-      await updateItem(db, item.id, {
-        status: "recognized",
-        result: data.result || null,
-        error: null
-      });
+      if (data.status === "recognized") {
+        await updateItem(db, item.id, {
+          status: "recognized",
+          result: data.result,
+          error: null
+        });
+      } else {
+        await updateItem(db, item.id, {
+          status: "failed",
+          result: null,
+          error: "Upload failed"
+        });
+      }
 
       await notifyClientsSyncDone();
     } catch {
@@ -154,6 +166,7 @@ async function syncPendingRecordings() {
 
 async function notifyClientsSyncDone() {
   const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+
   for (const client of clients) {
     client.postMessage({ type: "SYNC_DONE" });
   }

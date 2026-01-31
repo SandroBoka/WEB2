@@ -1,0 +1,41 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 3rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+}
+
+.status-badge.online {
+  background: #e6f7ec;
+  color: #137333;
+  border-color: #b7e1c2;
+}
+
+.status-badge.offline {
+  background: #fdecea;
+  color: #a50e0e;
+  border-color: #f5c6cb;
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 1.25rem;
+  }
+}

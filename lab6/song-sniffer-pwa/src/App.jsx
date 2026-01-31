@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { addRecording, listRecordings, deleteRecording } from "./db";
+import "./app.css";
 
 export default function App() {
   const [online, setOnline] = useState(navigator.onLine);
@@ -147,20 +148,17 @@ export default function App() {
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", padding: 16, fontFamily: "system-ui" }}>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <h1 style={{ margin: 0 }}>SongSniffer</h1>
+      <header className="app-header">
+        <h1 className="app-title">SongSniffer</h1>
+
         <span
-          style={{
-            padding: "4px 8px",
-            borderRadius: 999,
-            border: "1px solid #ccc",
-            fontSize: 12,
-          }}
+          className={`status-badge ${online ? "online" : "offline"}`}
           aria-label={online ? "Online" : "Offline"}
         >
           {online ? "Online" : "Offline"}
         </span>
       </header>
+
 
       <p style={{ lineHeight: 1.5 }}>
         Recognize a song from a <b>uploaded audio track</b> or record <b>12 seconds</b> with your microphone.
@@ -194,9 +192,6 @@ export default function App() {
           />
           <button type="button">📁 Upload audio</button>
         </label>
-        <button type="button" disabled>
-          🔄 Sync pending (kasnije)
-        </button>
       </section>
 
       <hr style={{ margin: "16px 0" }} />
@@ -243,8 +238,28 @@ export default function App() {
                   {audioUrls[it.id] && <audio controls src={audioUrls[it.id]} />}
 
                   {it.result && (
-                    <div>
-                      <b>{it.result.artist}</b> – {it.result.title}
+                    <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                      {it.result.image && (
+                        <img
+                          src={it.result.image}
+                          alt={`Cover art for ${it.result.title ?? "song"}`}
+                          width={64}
+                          height={64}
+                          style={{ borderRadius: 8, objectFit: "cover", border: "1px solid #ddd" }}
+                          loading="lazy"
+                        />
+                      )}
+
+                      <div>
+                        <div>
+                          <b>{it.result.artist}</b> – {it.result.title}
+                        </div>
+                        {it.result.album && (
+                          <div style={{ fontSize: 12, color: "#555" }}>
+                            Album: {it.result.album}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
 

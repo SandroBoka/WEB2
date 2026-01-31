@@ -66,6 +66,37 @@ export default function App() {
     }
   }
 
+  function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map((c) => c.charCodeAt(0)));
+  }
+
+  async function enablePush() {
+    if (!("serviceWorker" in navigator)) return;
+    if (!("PushManager" in window)) return;
+
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") return;
+
+    const keyRes = await fetch("/api/vapidPublicKey");
+    const { key } = await keyRes.json();
+
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(key)
+    });
+
+    await fetch("/api/saveSubscription", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(sub)
+    });
+  }
+
+
   useEffect(() => {
     refreshItems();
   }, []);
@@ -171,6 +202,9 @@ export default function App() {
             {recording ? `🎙️ Recording (${countdown})` : "🎙️ Record 12s of audio"}
           </button>
         )}
+        <button type="button" onClick={enablePush}>
+          🔔 Enable notifications
+        </button>
         {lastRecording && (
           <div>
             <p>Last Audio:</p>

@@ -2,12 +2,48 @@ import express from "express";
 import multer from "multer";
 import fetch from "node-fetch";
 import FormData from "form-data";
+import webpush from "web-push";
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
+app.use(express.json({ limit: "1mb" }));
+
+const vapidPublicKey = process.env.VAPID_PUBLIC_KEY;
+const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
+const vapidSubject = process.env.VAPID_SUBJECT;
+
+if (vapidPublicKey && vapidPrivateKey && vapidSubject) {
+    webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+}
+
+const subscriptions = new Set();
+
 // heatlh check
 app.get("/api/health", (req, res) => {
+    res.json({ ok: true });
+});
+
+app.get("/api/vapidPublicKey", (req, res) => {
+    if (!vapidPublicKey) return res.status(500).json({ error: "Missing VAPID_PUBLIC_KEY" });
+    res.json({ key: vapidPublicKey });
+});
+
+app.post("/api/saveSubscription", (req, res) => {
+    const sub = req.body;
+    if (!sub?.endpoint) return res.status(400).json({ error: "Invalid subscription" });
+
+    subscriptions.add(JSON.stringify(sub));
+    res.json({ ok: true });
+});
+
+app.post("/api/notifyRecognized", async (req, res) => {
+    const { title, body, image } = req.body || {};
+    await sendPushToAll({
+        title: title || "Song recognized 🎵",
+        body: body || "New recognition result.",
+        image: image || null
+    });
     res.json({ ok: true });
 });
 
@@ -64,29 +100,43 @@ app.post("/api/recognize", upload.single("file"), async (req, res) => {
 })
 
 function getBestAlbumImage(result) {
-  if (!result) return null;
+    if (!result) return null;
 
-  const spotifyImage =
-    result?.spotify?.album?.images?.[0]?.url;
+    const spotifyImage =
+        result?.spotify?.album?.images?.[0]?.url;
 
-  if (spotifyImage) return spotifyImage;
+    if (spotifyImage) return spotifyImage;
 
-  const appleTemplate =
-    result?.apple_music?.artwork?.url;
+    const appleTemplate =
+        result?.apple_music?.artwork?.url;
 
-  if (appleTemplate) {
-    return appleTemplate.replace("{w}x{h}", "512x512");
-  }
+    if (appleTemplate) {
+        return appleTemplate.replace("{w}x{h}", "512x512");
+    }
 
-  const deezerImage =
-    result?.deezer?.album?.cover_big ||
-    result?.deezer?.album?.cover;
+    const deezerImage =
+        result?.deezer?.album?.cover_big ||
+        result?.deezer?.album?.cover;
 
-  if (deezerImage) return deezerImage;
+    if (deezerImage) return deezerImage;
 
-  return null;
+    return null;
 }
 
+async function sendPushToAll(payloadObj) {
+    if (!vapidPublicKey || !vapidPrivateKey || !vapidSubject) return;
+
+    const payload = JSON.stringify(payloadObj);
+
+    for (const subStr of subscriptions) {
+        const sub = JSON.parse(subStr);
+        try {
+            await webpush.sendNotification(sub, payload);
+        } catch {
+            subscriptions.delete(subStr);
+        }
+    }
+}
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {

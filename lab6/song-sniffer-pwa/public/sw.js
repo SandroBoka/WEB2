@@ -149,6 +149,18 @@ async function syncPendingRecordings() {
           result: data.result,
           error: null
         });
+
+        try {
+          await fetch("/api/notifyRecognized", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: "Song recognized 🎵",
+              body: `${data?.result?.artist ?? "Unknown"} — ${data?.result?.title ?? "Unknown"}`,
+              image: data?.result?.image ?? null
+            })
+          });
+        } catch { }
       } else {
         await updateItem(db, item.id, {
           status: "failed",
@@ -171,3 +183,33 @@ async function notifyClientsSyncDone() {
     client.postMessage({ type: "SYNC_DONE" });
   }
 }
+
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch { }
+
+  const title = data.title || "SongSniffer";
+  const options = {
+    body: data.body || "",
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
+    image: data.image || undefined,
+    data: { url: "/" }
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if ("focus" in client) return client.focus();
+      }
+      return self.clients.openWindow(event.notification.data?.url || "/");
+    })
+  );
+});
